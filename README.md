@@ -1,49 +1,138 @@
-# Laravel E-commerce Website
-E-commerce application built with Laravel, Vue.js, Tailwind.css and Alpine.js. <br>
+# Boutique en Ligne – Laravel + Vue.js + Docker
 
-> If you want to see every single step how this E-commerce application is build and learn how to build your own Full Stack applications, check my website [thecodeholic.com](https://thecodeholic.com)
+Ce projet est une **application e-commerce complète**, composée d’une **interface client** développée avec **Laravel**, et d’un **panneau d’administration** construit avec **Vue.js** (Vite), le tout orchestré et standardisé dans un environnement **Docker**.  
+L’API Laravel assure la gestion des produits, commandes, utilisateurs et authentification, tandis que le tableau de bord Vue.js permet l'administration des contenus en temps réel.
 
-## Demo
-Admin Panel: https://admin.lcommerce.net
+---
+
+## 🌐 Fonctionnalités Principales
+
+| Module | Description |
+|-------|-------------|
+| **Interface Client (Laravel)** | Consultation des produits, inscription/connexion, panier, commandes. |
+| **Panneau Admin (Vue.js)** | Gestion des produits, catégories, utilisateurs, commandes. |
+| **API REST** | Communication sécurisée entre Laravel et Vue.js. |
+| **Docker** | Standardisation complète de l’environnement. |
+| **MySQL** | Stockage des données avec persistance. |
+
+---
+
+## 🧰 Technologies Utilisées
+
+| Technologie | Rôle | Méthode d'utilisation |
+|------------|------|-----------------------|
+| **Laravel 10** | Backend & API | `php artisan serve` (en dev) / Servi via Nginx (Docker) |
+| **Vue.js 3 + Vite** | Interface Admin dynamique | `npm run dev` ou **Vue_dev** avec hot reload |
+| **MySQL 8** | Base de données | Conteneur Docker, persistance via volume `dbdata` |
+| **Docker & Docker Compose** | Orchestration des services | `docker-compose up -d` |
+| **Nginx** | Reverse proxy & serveur web | Configuration incluse dans `docker/nginx/` |
+
+---
+
+## 🔧 Architecture Docker
+
+/mon-projet
+├── backend/ # Interface Admin Vue.js
+│ ├── Dockerfile # Build (production)
+│ └── Dockerfile.dev # Mode développement Vite (hot reload)
+├── docker/
+│ ├── php/Dockerfile # PHP-FPM
+│ └── nginx/default.conf # Config Nginx pour Laravel
+├── docker-compose.yml # Orchestration
+├── .env.example # Modèle d'environnement
+└── README.md
+
+
+### Services gérés par `docker-compose`
+
+| Service | Fonction | Port |
+|--------|----------|------|
+| `laravel` | API & logique applicative | via Nginx |
+| `nginx` | Proxy + serveur HTTP | **8080** (accès client) |
+| `db (mysql)` | Base de données | **3306** |
+| `phpmyadmin` | Interface SQL | **8082** |
+| `vue_dev` (optionnel) | Mode Dev avec Vite HMR | **5173** |
+| `vue` (production) | Build Admin servi par Nginx | **3000** |
+
+---
+
+## ✅ Prérequis
+
+Avant installation, assurez-vous d'avoir :
+
+| Outil | Version recommandée |
+|------|----------------------|
+| **Docker** | ≥ 20.x |
+| **Docker Compose** | ≥ 1.29 |
+| **Git** | ≥ 2.x |
+
+---
+
+## 🚀 Guide d'Installation
+
+### 1) Cloner le projet
+
+```bash
+git clone https://github.com/TON-USER/boutique-laravel-vue.git
+cd boutique-laravel-vue
 ```
-Email: admin@example.com
-Password: admin123
-```
 
-Website: https://lcommerce.net
+### 2) Créer le fichier `.env`
 
 ```
-Email: user1@example.com
-Password: useruser1
+cp .env.example .env
+```
+Pensez à configurer les accès DB si nécessaire.
 
+### 3) Lancer l’environnement Docker
 
-Email: user2@example.com
-Password: useruser2
+```
+docker-compose up --build -d
 ```
 
-## Installation 
-Make sure you have environment setup properly. You will need MySQL, PHP8.1, Node.js and composer.
+### 4) Installer les dépendances Laravel
 
-### Install Laravel Website + API
-1. Download the project (or clone using GIT)
-2. Copy `.env.example` into `.env` and configure database credentials
-3. Navigate to the project's root directory using terminal
-4. Run `composer install`
-5. Set the encryption key by executing `php artisan key:generate --ansi`
-6. Run migrations `php artisan migrate --seed`
-7. Start local server by executing `php artisan serve`
-8. Open new terminal and navigate to the project root directory
-9. Run `npm install`
-10. Run `npm run dev` to start vite server for Laravel frontend
+```
+docker-compose exec laravel composer install
+docker-compose exec laravel php artisan key:generate
+docker-compose exec laravel php artisan migrate
+```
 
-### Install Vue.js Admin Panel
-1. Navigate to `backend` folder
-2. Run `npm install`
-3. Copy `backend/.env.example` into `backend/.env`
-4. Make sure `VITE_API_BASE_URL` key in `backend/.env` is set to your Laravel API host (Default: http://localhost:8000)
-5. Run `npm run dev`
-6. Open Vue.js Admin Panel in browser and login with
-    ```
-    admin@example.com
-    admin123
-    ```
+### 5) Mode développement du panneau admin (Hot Reload)
+
+```
+docker-compose exec vue_dev npm install
+docker-compose exec vue_dev npm run dev
+```
+
+### 6) Accéder aux interfaces
+
+| Interface              | URL                                            |
+| ---------------------- | ---------------------------------------------- |
+| **Site Client**        | [http://localhost:8080](http://localhost:8080) |
+| **Admin Vue.js (Dev)** | [http://localhost:5173](http://localhost:5173) |
+| **phpMyAdmin**         | [http://localhost:8082](http://localhost:8082) |
+
+
+## 🎓 Compétences Développées grâce à ce projet
+
+* Maîtrise du pattern API REST
+
+* Intégration Laravel ↔ Vue.js (consommation API)
+
+* Standardisation d’environnement avec Docker
+
+* Gestion de configuration multi-services (PHP-FPM, Nginx, Node, MySQL)
+
+* Automatisation et reproductibilité d'installation
+
+* Séparation claire frontend / backend
+
+## 📄 Licence
+
+Projet librement modifiable dans un cadre éducatif ou pratique.
+
+## 🤝 Contribution
+
+Toute amélioration est bienvenue.
+Fork → créer branche → Pull Request.
